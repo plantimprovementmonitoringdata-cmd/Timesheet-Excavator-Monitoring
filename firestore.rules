@@ -1,0 +1,57 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} { 
+      allow read, write: if false; 
+    }
+
+    // Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isVerified() {
+      // Relaxed to allow any email logins to sync data freely
+      return true;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && isVerified() && request.auth.token.email == "plantimprovementmonitoringdata@gmail.com";
+    }
+
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidTimesheet(data) {
+      return data.keys().hasAll(['startDate', 'startTime', 'endDate', 'endTime', 'area', 'unitNo', 'operatorName', 'totalHours', 'createdBy']) &&
+             data.startDate is string && data.startDate.size() <= 50 &&
+             data.startTime is string && data.startTime.size() <= 50 &&
+             data.endDate is string && data.endDate.size() <= 50 &&
+             data.endTime is string && data.endTime.size() <= 50 &&
+             data.area is string && data.area.size() <= 500 &&
+             data.unitNo is string && data.unitNo.size() <= 100 &&
+             data.operatorName is string && data.operatorName.size() <= 150 &&
+             data.totalHours is number &&
+             data.createdBy is string && data.createdBy.size() <= 128;
+    }
+
+    match /timesheets/{timesheetId} {
+      // 8. Secure List Queries: we allow any signed-in user to see all timesheets (centralized).
+      allow read: if isSignedIn() && isVerified();
+      
+      allow create: if isSignedIn() && isVerified() && isValidId(timesheetId) && isValidTimesheet(incoming());
+      
+      // Allow update for any signed-in user or admin
+      allow update: if (isSignedIn() && isVerified()) || isAdmin();
+
+      // Only Admin can delete
+      allow delete: if isAdmin() && isValidId(timesheetId);
+    }
+  }
+}

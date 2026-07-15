@@ -1,0 +1,40 @@
+{
+  "entities": {
+    "timesheet": {
+      "title": "Timesheet",
+      "description": "Records of excavator loading timesheets",
+      "type": "object",
+      "properties": {
+        "startDate": { "type": "string" },
+        "startTime": { "type": "string" },
+        "endDate": { "type": "string" },
+        "endTime": { "type": "string" },
+        "area": { "type": "string" },
+        "unitNo": { "type": "string" },
+        "operatorName": { "type": "string" },
+        "totalHours": { "type": "number" },
+        "createdAt": { "type": "string", "description": "Timestamp ISO" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["startDate", "startTime", "endDate", "endTime", "area", "unitNo", "operatorName", "totalHours", "createdAt", "createdBy"]
+    },
+    "admin": {
+      "title": "Admin",
+      "description": "Admin users",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/timesheets/{timesheetId}": {
+      "schema": { "$ref": "#/entities/timesheet" },
+      "description": "Collection of all timesheet records"
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/admin" },
+      "description": "Whitelisted admin users"
+    }
+  }
+}
