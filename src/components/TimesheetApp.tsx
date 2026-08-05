@@ -435,6 +435,38 @@ export const TimesheetApp = () => {
         {/* Right Col: Dashboard & Data */}
         <div className="lg:col-span-2 space-y-6">
 
+          {/* Data Filter */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white/40 backdrop-blur-2xl p-4 sm:p-5 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/60 gap-4">
+             <div className="flex items-center gap-3 text-indigo-950 font-bold">
+                <span className="bg-indigo-100/50 p-2.5 rounded-xl text-indigo-700">
+                  <Calendar className="w-5 h-5" />
+                </span>
+                Data Filter
+             </div>
+             <div className="flex flex-wrap items-center gap-3">
+               <select
+                 value={filterMode}
+                 onChange={e => {
+                   setFilterMode(e.target.value as 'month' | 'date');
+                   setFilterValue(e.target.value === 'month' ? format(new Date(), 'yyyy-MM') : format(new Date(), 'yyyy-MM-dd'));
+                 }}
+                 className="rounded-xl bg-white/60 backdrop-blur-md border border-white/80 px-3 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none transition-all font-semibold text-indigo-950"
+               >
+                 <option value="month">By Month</option>
+                 <option value="date">By Date</option>
+               </select>
+               <input 
+                 type={filterMode}
+                 value={filterValue} 
+                 onChange={e => setFilterValue(e.target.value)}
+                 className="rounded-xl bg-white/60 backdrop-blur-md border border-white/80 px-4 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-all font-semibold text-indigo-950"
+               />
+               <button type="button" title="View All Data" onClick={() => setFilterValue('')} className="p-2 py-2 px-3 bg-white/50 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm">
+                 All Log
+               </button>
+             </div>
+          </div>
+
           {/* KPI Dashboard */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="group relative overflow-hidden bg-white/40 backdrop-blur-md border border-white/60 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] flex flex-col justify-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_32px_0_rgba(31,38,135,0.1)] hover:bg-white/60 hover:border-white/80 cursor-pointer">
@@ -496,37 +528,6 @@ export const TimesheetApp = () => {
                 {summaryStats.avgDuration} <span className="text-lg font-medium text-indigo-900/40 group-hover:text-blue-500/50 transition-colors duration-300">h</span>
               </div>
             </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white/40 backdrop-blur-2xl p-4 sm:p-5 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/60 gap-4">
-             <div className="flex items-center gap-3 text-indigo-950 font-bold">
-                <span className="bg-indigo-100/50 p-2.5 rounded-xl text-indigo-700">
-                  <Calendar className="w-5 h-5" />
-                </span>
-                Data Filter
-             </div>
-             <div className="flex flex-wrap items-center gap-3">
-               <select
-                 value={filterMode}
-                 onChange={e => {
-                   setFilterMode(e.target.value as 'month' | 'date');
-                   setFilterValue(e.target.value === 'month' ? format(new Date(), 'yyyy-MM') : format(new Date(), 'yyyy-MM-dd'));
-                 }}
-                 className="rounded-xl bg-white/60 backdrop-blur-md border border-white/80 px-3 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none transition-all font-semibold text-indigo-950"
-               >
-                 <option value="month">By Month</option>
-                 <option value="date">By Date</option>
-               </select>
-               <input 
-                 type={filterMode}
-                 value={filterValue} 
-                 onChange={e => setFilterValue(e.target.value)}
-                 className="rounded-xl bg-white/60 backdrop-blur-md border border-white/80 px-4 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-all font-semibold text-indigo-950"
-               />
-               <button type="button" title="View All Data" onClick={() => setFilterValue('')} className="p-2 py-2 px-3 bg-white/50 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm">
-                 All Log
-               </button>
-             </div>
           </div>
           
           <div className={`${isFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8' : 'bg-white/40 backdrop-blur-2xl p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/60'} transition-all`}>
