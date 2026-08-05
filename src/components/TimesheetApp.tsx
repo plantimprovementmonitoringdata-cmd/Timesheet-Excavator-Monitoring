@@ -350,7 +350,7 @@ export const TimesheetApp = () => {
                   <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Live Sync</span>
                 </div>
               </div>
-              <p className="text-xs font-semibold text-indigo-900/60 mt-0.5">Sistem Pengisian Timesheet Operator Berbasis Online</p>
+              <p className="text-xs font-semibold text-indigo-900/60 mt-0.5">Timesheet Excavator Mini Berbasis Online</p>
             </div>
           </div>
           <div className="flex gap-4 items-center">
