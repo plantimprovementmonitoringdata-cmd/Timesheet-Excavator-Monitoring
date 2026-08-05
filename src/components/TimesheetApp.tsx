@@ -29,27 +29,32 @@ export const TimesheetApp = () => {
   const [timesheets, setTimesheets] = useState<Timesheet[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [filterMonth, setFilterMonth] = useState(format(new Date(), 'yyyy-MM'));
+  const [filterMode, setFilterMode] = useState<'month' | 'date'>('month');
+  const [filterValue, setFilterValue] = useState(format(new Date(), 'yyyy-MM'));
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLogsFullscreen, setIsLogsFullscreen] = useState(false);
 
   const filteredTimesheets = React.useMemo(() => {
-    if (!filterMonth) return timesheets;
-    
-    if (filterMonth.length !== 7) return timesheets;
-    const [year, month] = filterMonth.split('-').map(Number);
-    const selectedMonthDate = new Date(year, month - 1, 1);
+    if (!filterValue) return timesheets;
     
     return timesheets.filter(sheet => {
       try {
         if (!sheet.startDate) return false;
-        const sheetDate = parse(sheet.startDate, 'yyyy-MM-dd', new Date());
-        return isSameMonth(sheetDate, selectedMonthDate);
+        
+        if (filterMode === 'month') {
+          if (filterValue.length !== 7) return true;
+          const [year, month] = filterValue.split('-').map(Number);
+          const selectedMonthDate = new Date(year, month - 1, 1);
+          const sheetDate = parse(sheet.startDate, 'yyyy-MM-dd', new Date());
+          return isSameMonth(sheetDate, selectedMonthDate);
+        } else {
+          return sheet.startDate === filterValue;
+        }
       } catch(e) {
         return false;
       }
     });
-  }, [timesheets, filterMonth]);
+  }, [timesheets, filterValue, filterMode]);
   
   const [form, setForm] = useState({
     startDate: '',
@@ -501,14 +506,24 @@ export const TimesheetApp = () => {
                 Data Filter
              </div>
              <div className="flex flex-wrap items-center gap-3">
-               <label className="text-sm font-semibold text-indigo-900/80">Select Month:</label>
+               <select
+                 value={filterMode}
+                 onChange={e => {
+                   setFilterMode(e.target.value as 'month' | 'date');
+                   setFilterValue(e.target.value === 'month' ? format(new Date(), 'yyyy-MM') : format(new Date(), 'yyyy-MM-dd'));
+                 }}
+                 className="rounded-xl bg-white/60 backdrop-blur-md border border-white/80 px-3 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none transition-all font-semibold text-indigo-950"
+               >
+                 <option value="month">By Month</option>
+                 <option value="date">By Date</option>
+               </select>
                <input 
-                 type="month" 
-                 value={filterMonth} 
-                 onChange={e => setFilterMonth(e.target.value)}
+                 type={filterMode}
+                 value={filterValue} 
+                 onChange={e => setFilterValue(e.target.value)}
                  className="rounded-xl bg-white/60 backdrop-blur-md border border-white/80 px-4 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-all font-semibold text-indigo-950"
                />
-               <button type="button" title="View All Data" onClick={() => setFilterMonth('')} className="p-2 py-2 px-3 bg-white/50 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm">
+               <button type="button" title="View All Data" onClick={() => setFilterValue('')} className="p-2 py-2 px-3 bg-white/50 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm">
                  All Log
                </button>
              </div>
@@ -533,7 +548,7 @@ export const TimesheetApp = () => {
               </div>
             ) : dashboardStats.length === 0 ? (
               <div className="bg-white/30 backdrop-blur-sm border border-white/40 p-8 rounded-2xl text-center">
-                <p className="text-indigo-900/50 font-semibold">{filterMonth ? "No data available for this month." : "No data available."}</p>
+                <p className="text-indigo-900/50 font-semibold">{filterValue ? "No data available for this selection." : "No data available."}</p>
               </div>
             ) : (
               <div className="space-y-8">
