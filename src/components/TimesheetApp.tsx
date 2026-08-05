@@ -287,7 +287,20 @@ export const TimesheetApp = () => {
         cumulativePercent: totalHoursAll > 0 ? Number(((cumulative / totalHoursAll) * 100).toFixed(1)) : 0
       };
     });
-  }, [timesheets]);
+  }, [filteredTimesheets]);
+
+  const getDashboardTitle = () => {
+    if (!filterValue) return 'Overview Dashboard (All Data)';
+    try {
+      if (filterMode === 'month') {
+        return `Overview Dashboard - ${format(parse(filterValue, 'yyyy-MM', new Date()), 'MMMM yyyy')}`;
+      } else {
+        return `Overview Dashboard - ${format(parse(filterValue, 'yyyy-MM-dd', new Date()), 'dd MMMM yyyy')}`;
+      }
+    } catch (e) {
+      return 'Overview Dashboard';
+    }
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 text-slate-800 pb-20 font-sans">
@@ -533,7 +546,7 @@ export const TimesheetApp = () => {
           <div className={`${isFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8' : 'bg-white/40 backdrop-blur-2xl p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/60'} transition-all`}>
             <div className="flex justify-between items-center mb-5">
               <h2 className="text-xl font-bold flex items-center text-indigo-950">
-                Overview Dashboard
+                {getDashboardTitle()}
               </h2>
               <button 
                 onClick={() => setIsFullscreen(!isFullscreen)} 
