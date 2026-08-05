@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { OperationType, handleFirestoreError } from '../utils/firestoreErrorHandler';
 import { exportToDrive } from '../utils/drive';
 import { format, differenceInMinutes, parse, isSameMonth } from 'date-fns';
-import { RefreshCw, Trash2, Send, Tractor, FileSpreadsheet, Pencil, Calendar, Maximize, Minimize, Clock, FileText, MapPin, Timer } from 'lucide-react';
+import { RefreshCw, Trash2, Send, Tractor, FileSpreadsheet, Pencil, Calendar, Maximize, Minimize, Clock, FileText, MapPin, Timer, Search } from 'lucide-react';
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, LabelList } from 'recharts';
 
 export interface Timesheet {
@@ -34,6 +34,7 @@ export const TimesheetApp = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLogsFullscreen, setIsLogsFullscreen] = useState(false);
   const [selectedAreaDetails, setSelectedAreaDetails] = useState<string | null>(null);
+  const [dashboardSearchArea, setDashboardSearchArea] = useState('');
 
   const filteredTimesheets = React.useMemo(() => {
     if (!filterValue) return timesheets;
@@ -295,6 +296,12 @@ export const TimesheetApp = () => {
     });
   }, [filteredTimesheets]);
 
+  const searchedDashboardStats = React.useMemo(() => {
+    if (!dashboardSearchArea) return dashboardStats;
+    const lowerSearch = dashboardSearchArea.toLowerCase();
+    return dashboardStats.filter(stat => stat.area.toLowerCase().includes(lowerSearch));
+  }, [dashboardStats, dashboardSearchArea]);
+
   const getDashboardTitle = () => {
     if (!filterValue) return 'Overview Dashboard (All Data)';
     try {
@@ -544,28 +551,42 @@ export const TimesheetApp = () => {
               <h2 className="text-xl font-bold flex items-center text-indigo-950">
                 {getDashboardTitle()}
               </h2>
-              <button 
-                onClick={() => setIsFullscreen(!isFullscreen)} 
-                className="p-2 bg-white/30 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2"
-                title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-              >
-                {isFullscreen ? <><Minimize className="w-4 h-4" /> Exit Fullscreen</> : <><Maximize className="w-4 h-4" /> Fullscreen</>}
-              </button>
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-4 w-4 text-indigo-400" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search Loading Area..."
+                    value={dashboardSearchArea}
+                    onChange={(e) => setDashboardSearchArea(e.target.value)}
+                    className="pl-9 pr-4 py-2 w-48 sm:w-64 rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950 placeholder-indigo-900/40"
+                  />
+                </div>
+                <button 
+                  onClick={() => setIsFullscreen(!isFullscreen)} 
+                  className="p-2.5 bg-white/30 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2"
+                  title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                >
+                  {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+                </button>
+              </div>
             </div>
             {!user ? (
               <div className="bg-white/30 backdrop-blur-sm border border-white/40 p-8 rounded-2xl text-center">
                 <p className="text-indigo-900/50 font-semibold">Please sign in to view dashboard data.</p>
               </div>
-            ) : dashboardStats.length === 0 ? (
+            ) : searchedDashboardStats.length === 0 ? (
               <div className="bg-white/30 backdrop-blur-sm border border-white/40 p-8 rounded-2xl text-center">
                 <p className="text-indigo-900/50 font-semibold">{filterValue ? "No data available for this selection." : "No data available."}</p>
               </div>
             ) : (
               <div className="space-y-8">
                 <div className={`w-full pt-4 overflow-x-auto custom-scrollbar ${isFullscreen ? 'h-[50vh] min-h-[400px]' : 'h-72'}`}>
-                  <div style={{ minWidth: `max(100%, ${dashboardStats.length * 60}px)`, height: '100%' }}>
+                  <div style={{ minWidth: `max(100%, ${searchedDashboardStats.length * 60}px)`, height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
-                      <ComposedChart data={dashboardStats} margin={{ top: 25, right: 0, bottom: 20, left: -20 }}>
+                      <ComposedChart data={searchedDashboardStats} margin={{ top: 25, right: 0, bottom: 20, left: -20 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(99,102,241,0.1)" />
                         <XAxis dataKey="area" tick={{ fontSize: 11, fill: '#4f46e5', fontWeight: 600 }} axisLine={false} tickLine={false} interval={0} angle={-30} textAnchor="end" height={50} />
                         <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#6366f1' }} axisLine={false} tickLine={false} />
@@ -600,7 +621,7 @@ export const TimesheetApp = () => {
                           activeBar={{ fill: 'url(#colorGradientHover)', stroke: '#4f46e5', strokeWidth: 2 }}
                         >
                           <LabelList dataKey="total" position="top" fill="#4f46e5" fontSize={11} fontWeight={600} />
-                          {dashboardStats.map((_, index) => (
+                          {searchedDashboardStats.map((_, index) => (
                             <Cell key={`cell-${index}`} fill={`url(#colorGradient)`} />
                           ))}
                         </Bar>
@@ -611,7 +632,7 @@ export const TimesheetApp = () => {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-72 overflow-y-auto custom-scrollbar pr-2 pb-2">
-                  {dashboardStats.map(stat => (
+                  {searchedDashboardStats.map(stat => (
                     <div 
                       key={stat.area} 
                       className="bg-white/30 backdrop-blur-lg border border-white/80 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] hover:scale-[1.02] transition-transform flex flex-col justify-between cursor-pointer"

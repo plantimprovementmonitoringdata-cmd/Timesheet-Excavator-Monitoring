@@ -1,0 +1,24 @@
+--- src/components/TimesheetApp.tsx
++++ src/components/TimesheetApp.tsx
+@@ -265,11 +265,6 @@
+   // Dashboard Aggregation (Total Hours per Area) - Pareto
+-  const searchedDashboardStats = React.useMemo(() => {
+-    if (!dashboardSearchArea) return dashboardStats;
+-    const lowerSearch = dashboardSearchArea.toLowerCase();
+-    return dashboardStats.filter(stat => stat.area.toLowerCase().includes(lowerSearch));
+-  }, [dashboardStats, dashboardSearchArea]);
+-
+   const dashboardStats = React.useMemo(() => {
+     const stats: Record<string, number> = {};
+     const originalNames: Record<string, string> = {};
+@@ -298,6 +293,12 @@
+     });
+   }, [filteredTimesheets]);
+ 
++  const searchedDashboardStats = React.useMemo(() => {
++    if (!dashboardSearchArea) return dashboardStats;
++    const lowerSearch = dashboardSearchArea.toLowerCase();
++    return dashboardStats.filter(stat => stat.area.toLowerCase().includes(lowerSearch));
++  }, [dashboardStats, dashboardSearchArea]);
++
+   const getDashboardTitle = () => {
