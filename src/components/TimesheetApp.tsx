@@ -610,7 +610,7 @@ export const TimesheetApp = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-72 overflow-y-auto custom-scrollbar pr-2 pb-2">
                   {dashboardStats.map(stat => (
                     <div 
                       key={stat.area} 
@@ -649,8 +649,8 @@ export const TimesheetApp = () => {
               </div>
             </div>
 
-            <div className={`border border-white/40 rounded-2xl overflow-hidden bg-white/20 backdrop-blur-[40px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] ${isLogsFullscreen ? 'flex-1 overflow-y-auto' : ''}`}>
-              <div className="overflow-x-auto">
+            <div className={`border border-white/40 rounded-2xl overflow-hidden bg-white/20 backdrop-blur-[40px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] ${isLogsFullscreen ? 'flex-1 overflow-y-auto custom-scrollbar' : 'max-h-96 overflow-y-auto custom-scrollbar'}`}>
+              <div className="overflow-x-auto custom-scrollbar">
                 <table className="min-w-full text-left text-sm whitespace-nowrap">
                   <thead className="bg-white/20 backdrop-blur-[20px] border-b border-white/40 text-indigo-900/80 font-bold text-[13px] uppercase tracking-wider">
                     <tr>
