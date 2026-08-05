@@ -379,43 +379,43 @@ export const TimesheetApp = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Start Date</label>
-                  <input type="date" required className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.startDate} onChange={e => setForm({...form, startDate: e.target.value})} />
+                  <input type="date" required className="w-full rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 p-3 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950" value={form.startDate} onChange={e => setForm({...form, startDate: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Start Time</label>
-                  <input type="time" required className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.startTime} onChange={e => setForm({...form, startTime: e.target.value})} />
+                  <input type="time" required className="w-full rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 p-3 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950" value={form.startTime} onChange={e => setForm({...form, startTime: e.target.value})} />
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">End Date</label>
-                  <input type="date" required className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.endDate} onChange={e => setForm({...form, endDate: e.target.value})} />
+                  <input type="date" required className="w-full rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 p-3 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950" value={form.endDate} onChange={e => setForm({...form, endDate: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">End Time</label>
-                  <input type="time" required className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.endTime} onChange={e => setForm({...form, endTime: e.target.value})} />
+                  <input type="time" required className="w-full rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 p-3 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950" value={form.endTime} onChange={e => setForm({...form, endTime: e.target.value})} />
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Loading Area</label>
-                <input type="text" required placeholder="e.g. Pit 1" className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30" value={form.area} onChange={e => setForm({...form, area: e.target.value})} />
+                <input type="text" required placeholder="e.g. Pit 1" className="w-full rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 p-3 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950 placeholder-indigo-900/30" value={form.area} onChange={e => setForm({...form, area: e.target.value})} />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Excavator Unit No.</label>
-                <input type="text" required placeholder="e.g. EX-201" className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30" value={form.unitNo} onChange={e => setForm({...form, unitNo: e.target.value})} />
+                <input type="text" required placeholder="e.g. EX-201" className="w-full rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 p-3 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950 placeholder-indigo-900/30" value={form.unitNo} onChange={e => setForm({...form, unitNo: e.target.value})} />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Operator Name</label>
-                <input type="text" required placeholder="e.g. John Doe" className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30" value={form.operatorName} onChange={e => setForm({...form, operatorName: e.target.value})} />
+                <input type="text" required placeholder="e.g. John Doe" className="w-full rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 p-3 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950 placeholder-indigo-900/30" value={form.operatorName} onChange={e => setForm({...form, operatorName: e.target.value})} />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Remarks (Optional)</label>
-                <textarea rows={2} placeholder="Add detailed work description here..." className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30 resize-none" value={form.remarks || ''} onChange={e => setForm({...form, remarks: e.target.value})}></textarea>
+                <textarea rows={2} placeholder="Add detailed work description here..." className="w-full rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 p-3 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950 placeholder-indigo-900/30 resize-none" value={form.remarks || ''} onChange={e => setForm({...form, remarks: e.target.value})}></textarea>
               </div>
 
               <div className="bg-white/40 backdrop-blur-md rounded-2xl p-4 flex justify-between items-center text-indigo-900 border border-white/80 shadow-[inset_0_2px_8px_rgba(0,0,0,0.02)]">
