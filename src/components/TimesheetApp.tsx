@@ -264,16 +264,21 @@ export const TimesheetApp = () => {
   // Dashboard Aggregation (Total Hours per Area) - Pareto
   const dashboardStats = React.useMemo(() => {
     const stats: Record<string, number> = {};
+    const originalNames: Record<string, string> = {};
     
     filteredTimesheets.forEach(sheet => {
       if (sheet.area && sheet.totalHours) {
-        stats[sheet.area] = (stats[sheet.area] || 0) + sheet.totalHours;
+        const normalizedArea = sheet.area.trim().toLowerCase();
+        stats[normalizedArea] = (stats[normalizedArea] || 0) + sheet.totalHours;
+        if (!originalNames[normalizedArea]) {
+          originalNames[normalizedArea] = sheet.area.trim();
+        }
       }
     });
     
     // Sort highest to lowest
-    const sortedData = Object.entries(stats).map(([area, total]) => ({
-      area,
+    const sortedData = Object.entries(stats).map(([normalizedArea, total]) => ({
+      area: originalNames[normalizedArea],
       total: Number(total.toFixed(2))
     })).sort((a, b) => b.total - a.total);
 
@@ -731,7 +736,7 @@ export const TimesheetApp = () => {
                 </div>
                 <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
                   <div className="space-y-4">
-                    {filteredTimesheets.filter(t => t.area === selectedAreaDetails).map((sheet, index) => (
+                    {filteredTimesheets.filter(t => t.area?.trim().toLowerCase() === selectedAreaDetails.trim().toLowerCase()).map((sheet, index) => (
                       <div key={sheet.id || index} className="bg-white/40 border border-white p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] hover:shadow-md transition-shadow flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                         <div className="flex-1">
                           <div className="font-bold text-indigo-950 mb-2 text-lg">{sheet.operatorName}</div>
@@ -747,7 +752,7 @@ export const TimesheetApp = () => {
                         </div>
                       </div>
                     ))}
-                    {filteredTimesheets.filter(t => t.area === selectedAreaDetails).length === 0 && (
+                    {filteredTimesheets.filter(t => t.area?.trim().toLowerCase() === selectedAreaDetails.trim().toLowerCase()).length === 0 && (
                       <div className="text-center p-8 text-indigo-900/50 font-semibold">
                         No entries found for this location.
                       </div>
