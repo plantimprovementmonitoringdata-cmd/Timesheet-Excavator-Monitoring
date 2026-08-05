@@ -6,7 +6,7 @@ import { OperationType, handleFirestoreError } from '../utils/firestoreErrorHand
 import { exportToDrive } from '../utils/drive';
 import { format, differenceInMinutes, parse, isSameMonth } from 'date-fns';
 import { RefreshCw, Trash2, Send, Tractor, FileSpreadsheet, Pencil, Calendar, Maximize, Minimize, Clock, FileText, MapPin, Timer } from 'lucide-react';
-import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts';
+import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, LabelList } from 'recharts';
 
 export interface Timesheet {
   id?: string;
@@ -33,6 +33,7 @@ export const TimesheetApp = () => {
   const [filterValue, setFilterValue] = useState(format(new Date(), 'yyyy-MM'));
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLogsFullscreen, setIsLogsFullscreen] = useState(false);
+  const [selectedAreaDetails, setSelectedAreaDetails] = useState<string | null>(null);
 
   const filteredTimesheets = React.useMemo(() => {
     if (!filterValue) return timesheets;
@@ -568,7 +569,7 @@ export const TimesheetApp = () => {
               <div className="space-y-8">
                 <div className={`w-full pt-4 ${isFullscreen ? 'h-[50vh] min-h-[400px]' : 'h-72'}`}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={dashboardStats} margin={{ top: 10, right: 0, bottom: 20, left: -20 }}>
+                    <ComposedChart data={dashboardStats} margin={{ top: 25, right: 0, bottom: 20, left: -20 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(99,102,241,0.1)" />
                       <XAxis dataKey="area" tick={{ fontSize: 11, fill: '#4f46e5', fontWeight: 600 }} axisLine={false} tickLine={false} interval={0} angle={-30} textAnchor="end" height={50} />
                       <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#6366f1' }} axisLine={false} tickLine={false} />
@@ -583,7 +584,21 @@ export const TimesheetApp = () => {
                           <stop offset="100%" stopColor="#ec4899" stopOpacity={0.9}/>
                         </linearGradient>
                       </defs>
-                      <Bar yAxisId="left" dataKey="total" name="Total Hours" radius={[6, 6, 0, 0]}>
+                      <Bar 
+                        yAxisId="left" 
+                        dataKey="total" 
+                        name="Total Hours" 
+                        radius={[6, 6, 0, 0]}
+                        onClick={(data: any) => {
+                          if (data && data.area) {
+                            setSelectedAreaDetails(data.area);
+                          } else if (data && data.payload && data.payload.area) {
+                            setSelectedAreaDetails(data.payload.area);
+                          }
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <LabelList dataKey="total" position="top" fill="#4f46e5" fontSize={11} fontWeight={600} />
                         {dashboardStats.map((_, index) => (
                           <Cell key={`cell-${index}`} fill={`url(#colorGradient)`} />
                         ))}
@@ -595,7 +610,11 @@ export const TimesheetApp = () => {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {dashboardStats.map(stat => (
-                    <div key={stat.area} className="bg-white/50 backdrop-blur-lg border border-white/80 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] hover:scale-[1.02] transition-transform flex flex-col justify-between">
+                    <div 
+                      key={stat.area} 
+                      className="bg-white/50 backdrop-blur-lg border border-white/80 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] hover:scale-[1.02] transition-transform flex flex-col justify-between cursor-pointer"
+                      onClick={() => setSelectedAreaDetails(stat.area)}
+                    >
                       <div className="text-sm text-indigo-900/60 font-bold mb-1 truncate" title={stat.area}>{stat.area}</div>
                       <div className="text-3xl font-extrabold text-indigo-950 tracking-tight">{stat.total} <span className="text-lg text-indigo-900/40">h</span></div>
                       <div className="text-xs text-pink-600 font-semibold mt-1 bg-pink-50 self-start px-2 py-0.5 rounded-full border border-pink-100">{stat.cumulativePercent}% Cuml</div>
@@ -691,6 +710,57 @@ export const TimesheetApp = () => {
               </div>
             </div>
           </div>
+          {/* Selected Area Details Modal */}
+          {selectedAreaDetails && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+              <div 
+                className="absolute inset-0 bg-indigo-900/40 backdrop-blur-sm transition-opacity"
+                onClick={() => setSelectedAreaDetails(null)}
+              ></div>
+              <div className="relative bg-white/90 backdrop-blur-xl border border-white/60 rounded-[2rem] p-6 shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
+                <div className="flex justify-between items-center mb-6 pb-4 border-b border-indigo-100/50">
+                  <h3 className="text-xl font-bold text-indigo-950 flex items-center gap-3">
+                    <div className="p-2 bg-indigo-100/50 text-indigo-700 rounded-xl">
+                      <MapPin className="w-5 h-5" />
+                    </div>
+                    Location Details: {selectedAreaDetails}
+                  </h3>
+                  <button 
+                    onClick={() => setSelectedAreaDetails(null)}
+                    className="p-2 rounded-xl hover:bg-indigo-50 text-indigo-400 hover:text-indigo-600 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  </button>
+                </div>
+                <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
+                  <div className="space-y-4">
+                    {filteredTimesheets.filter(t => t.area === selectedAreaDetails).map((sheet, index) => (
+                      <div key={sheet.id || index} className="bg-white/60 border border-white p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] hover:shadow-md transition-shadow flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                        <div className="flex-1">
+                          <div className="font-bold text-indigo-950 mb-2 text-lg">{sheet.operatorName}</div>
+                          <div className="text-sm font-semibold text-indigo-700 bg-indigo-50 inline-block px-2.5 py-1 rounded-lg border border-indigo-100 mb-3">Unit: {sheet.unitNo}</div>
+                          <div className="flex flex-wrap gap-4 text-sm font-medium text-indigo-900/70">
+                            <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-indigo-400" /> {format(parse(sheet.startDate, 'yyyy-MM-dd', new Date()), 'dd MMM yyyy')}</span>
+                            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-indigo-400" /> {sheet.startTime} - {sheet.endTime}</span>
+                          </div>
+                        </div>
+                        <div className="bg-gradient-to-br from-indigo-50 to-pink-50 border border-white/80 shadow-sm px-6 py-4 rounded-xl text-center min-w-[120px]">
+                          <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Duration</div>
+                          <div className="text-2xl font-black text-indigo-950">{sheet.totalHours}<span className="text-sm text-indigo-400 font-bold">h</span></div>
+                        </div>
+                      </div>
+                    ))}
+                    {filteredTimesheets.filter(t => t.area === selectedAreaDetails).length === 0 && (
+                      <div className="text-center p-8 text-indigo-900/50 font-semibold">
+                        No entries found for this location.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
       </main>
       </div>
