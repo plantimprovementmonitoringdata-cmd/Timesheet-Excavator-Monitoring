@@ -304,37 +304,27 @@ export const TimesheetApp = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 text-slate-800 pb-20 font-sans">
+    <div className="min-h-screen relative overflow-hidden bg-slate-50 text-slate-800 pb-20 font-sans">
       
-      {/* Animated Blobs for Glass Effect */}
-      <div className="absolute top-0 -left-20 w-[40rem] h-[40rem] bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-[spin_20s_linear_infinite] pointer-events-none"></div>
-      <div className="absolute top-40 -right-20 w-[35rem] h-[35rem] bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-[spin_25s_linear_infinite_reverse] pointer-events-none"></div>
-      <div className="absolute -bottom-40 left-[20%] w-[45rem] h-[45rem] bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-[spin_30s_linear_infinite] pointer-events-none"></div>
+      {/* Liquid Mesh Gradient Orbs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-blue-300/50 rounded-full mix-blend-multiply filter blur-[100px] animate-[spin_20s_linear_infinite] pointer-events-none"></div>
+      <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-pink-300/40 rounded-full mix-blend-multiply filter blur-[100px] animate-[spin_25s_linear_infinite_reverse] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] left-[20%] w-[60%] h-[60%] bg-purple-300/50 rounded-full mix-blend-multiply filter blur-[100px] animate-[spin_30s_linear_infinite] pointer-events-none"></div>
+      <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[40%] bg-cyan-200/40 rounded-full mix-blend-multiply filter blur-[100px] animate-[spin_35s_linear_infinite] pointer-events-none"></div>
       
-      {/* Topology Accent Background with 85% Transparency (opacity-15) */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.85]">
-        <svg className="w-full h-full opacity-15">
-          <defs>
-            <pattern id="topology" width="160" height="160" patternUnits="userSpaceOnUse">
-              <path d="M-20 40 L30 80 L90 30 L180 70 M30 80 L80 140 L180 120 M90 30 L60 -30 M80 140 L-20 160 M30 80 L90 30" stroke="#6366f1" strokeWidth="1.5" fill="none" />
-              <path d="M-20 120 L30 80 L120 100 L180 30" stroke="#ec4899" strokeWidth="1.5" strokeDasharray="4 4" fill="none" />
-              <circle cx="30" cy="80" r="4" fill="#ec4899" />
-              <circle cx="90" cy="30" r="5" fill="#6366f1" />
-              <circle cx="80" cy="140" r="4" fill="#ec4899" />
-              <circle cx="120" cy="100" r="3" fill="#8b5cf6" />
-              <circle cx="70" cy="70" r="3" fill="#6366f1" />
-              <path d="M30 80 L70 70 L90 30 M70 70 L120 100" stroke="#8b5cf6" strokeWidth="1.5" fill="none" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#topology)" />
-        </svg>
-      </div>
+      {/* Grain Texture Overlay */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-40 mix-blend-overlay">
+        <filter id="noiseFilter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch"/>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noiseFilter)"></rect>
+      </svg>
 
       <div className="relative z-10 w-full h-full">
-      <header className="bg-white/40 backdrop-blur-2xl border-b border-white/50 shadow-[0_4px_24px_rgba(31,38,135,0.05)] sticky top-0 z-50">
+      <header className="bg-white/30 backdrop-blur-[40px] border-b border-white/40 shadow-[0_4px_24px_rgba(31,38,135,0.05),inset_0_1px_1px_rgba(255,255,255,0.6)] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-white/60 rounded-xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.6)] border border-white/80">
+            <div className="p-2.5 bg-white/40 rounded-xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.6)] border border-white/80">
               <Tractor className="w-6 h-6 text-indigo-700" />
             </div>
             <div className="flex flex-col">
@@ -380,7 +370,7 @@ export const TimesheetApp = () => {
         
         {/* Left Col: Form */}
         <div className="lg:col-span-1">
-          <div className="bg-white/40 backdrop-blur-2xl p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/60">
+          <div className="bg-white/20 backdrop-blur-[40px] p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/40">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-indigo-950">
               <FileSpreadsheet className="w-6 h-6 text-indigo-500" />
               {editingId ? 'Edit Entry' : 'Form Input Operator'}
@@ -389,43 +379,43 @@ export const TimesheetApp = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Start Date</label>
-                  <input type="date" required className="w-full rounded-xl bg-white/50 backdrop-blur-sm border border-white/60 p-3 text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.startDate} onChange={e => setForm({...form, startDate: e.target.value})} />
+                  <input type="date" required className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.startDate} onChange={e => setForm({...form, startDate: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Start Time</label>
-                  <input type="time" required className="w-full rounded-xl bg-white/50 backdrop-blur-sm border border-white/60 p-3 text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.startTime} onChange={e => setForm({...form, startTime: e.target.value})} />
+                  <input type="time" required className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.startTime} onChange={e => setForm({...form, startTime: e.target.value})} />
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">End Date</label>
-                  <input type="date" required className="w-full rounded-xl bg-white/50 backdrop-blur-sm border border-white/60 p-3 text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.endDate} onChange={e => setForm({...form, endDate: e.target.value})} />
+                  <input type="date" required className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.endDate} onChange={e => setForm({...form, endDate: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">End Time</label>
-                  <input type="time" required className="w-full rounded-xl bg-white/50 backdrop-blur-sm border border-white/60 p-3 text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.endTime} onChange={e => setForm({...form, endTime: e.target.value})} />
+                  <input type="time" required className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950" value={form.endTime} onChange={e => setForm({...form, endTime: e.target.value})} />
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Loading Area</label>
-                <input type="text" required placeholder="e.g. Pit 1" className="w-full rounded-xl bg-white/50 backdrop-blur-sm border border-white/60 p-3 text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30" value={form.area} onChange={e => setForm({...form, area: e.target.value})} />
+                <input type="text" required placeholder="e.g. Pit 1" className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30" value={form.area} onChange={e => setForm({...form, area: e.target.value})} />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Excavator Unit No.</label>
-                <input type="text" required placeholder="e.g. EX-201" className="w-full rounded-xl bg-white/50 backdrop-blur-sm border border-white/60 p-3 text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30" value={form.unitNo} onChange={e => setForm({...form, unitNo: e.target.value})} />
+                <input type="text" required placeholder="e.g. EX-201" className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30" value={form.unitNo} onChange={e => setForm({...form, unitNo: e.target.value})} />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Operator Name</label>
-                <input type="text" required placeholder="e.g. John Doe" className="w-full rounded-xl bg-white/50 backdrop-blur-sm border border-white/60 p-3 text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30" value={form.operatorName} onChange={e => setForm({...form, operatorName: e.target.value})} />
+                <input type="text" required placeholder="e.g. John Doe" className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30" value={form.operatorName} onChange={e => setForm({...form, operatorName: e.target.value})} />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-indigo-900/80 mb-1.5 ml-1">Remarks (Optional)</label>
-                <textarea rows={2} placeholder="Add detailed work description here..." className="w-full rounded-xl bg-white/50 backdrop-blur-sm border border-white/60 p-3 text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30 resize-none" value={form.remarks || ''} onChange={e => setForm({...form, remarks: e.target.value})}></textarea>
+                <textarea rows={2} placeholder="Add detailed work description here..." className="w-full rounded-xl bg-white/30 backdrop-blur-[20px] border border-white/50 p-3 shadow-[inset_0_1px_4px_rgba(31,38,135,0.05),0_1px_1px_rgba(255,255,255,0.8)] text-sm focus:bg-white/80 focus:ring-2 focus:ring-indigo-400 outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-indigo-950 placeholder-indigo-900/30 resize-none" value={form.remarks || ''} onChange={e => setForm({...form, remarks: e.target.value})}></textarea>
               </div>
 
               <div className="bg-white/40 backdrop-blur-md rounded-2xl p-4 flex justify-between items-center text-indigo-900 border border-white/80 shadow-[inset_0_2px_8px_rgba(0,0,0,0.02)]">
@@ -438,7 +428,7 @@ export const TimesheetApp = () => {
               </button>
               
               {editingId && (
-                <button type="button" onClick={() => { setEditingId(null); setForm({startDate: '', startTime: '', endDate: '', endTime: '', area: '', unitNo: '', operatorName: '', remarks: ''}); }} className="w-full mt-2 bg-white/50 hover:bg-white/80 text-indigo-900 border border-indigo-900/10 font-bold py-2.5 rounded-xl transition-all">
+                <button type="button" onClick={() => { setEditingId(null); setForm({startDate: '', startTime: '', endDate: '', endTime: '', area: '', unitNo: '', operatorName: '', remarks: ''}); }} className="w-full mt-2 bg-white/30 hover:bg-white/80 text-indigo-900 border border-indigo-900/10 font-bold py-2.5 rounded-xl transition-all">
                   Cancel Edit
                 </button>
               )}
@@ -450,7 +440,7 @@ export const TimesheetApp = () => {
         <div className="lg:col-span-2 space-y-6">
 
           {/* Data Filter */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white/40 backdrop-blur-2xl p-4 sm:p-5 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/60 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white/20 backdrop-blur-[40px] p-4 sm:p-5 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/40 gap-4">
              <div className="flex items-center gap-3 text-indigo-950 font-bold">
                 <span className="bg-indigo-100/50 p-2.5 rounded-xl text-indigo-700">
                   <Calendar className="w-5 h-5" />
@@ -464,7 +454,7 @@ export const TimesheetApp = () => {
                    setFilterMode(e.target.value as 'month' | 'date');
                    setFilterValue(e.target.value === 'month' ? format(new Date(), 'yyyy-MM') : format(new Date(), 'yyyy-MM-dd'));
                  }}
-                 className="rounded-xl bg-white/60 backdrop-blur-md border border-white/80 px-3 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none transition-all font-semibold text-indigo-950"
+                 className="rounded-xl bg-white/40 backdrop-blur-md border border-white/80 px-3 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none transition-all font-semibold text-indigo-950"
                >
                  <option value="month">By Month</option>
                  <option value="date">By Date</option>
@@ -473,9 +463,9 @@ export const TimesheetApp = () => {
                  type={filterMode}
                  value={filterValue} 
                  onChange={e => setFilterValue(e.target.value)}
-                 className="rounded-xl bg-white/60 backdrop-blur-md border border-white/80 px-4 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-all font-semibold text-indigo-950"
+                 className="rounded-xl bg-white/40 backdrop-blur-md border border-white/80 px-4 py-2 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-400 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-all font-semibold text-indigo-950"
                />
-               <button type="button" title="View All Data" onClick={() => setFilterValue('')} className="p-2 py-2 px-3 bg-white/50 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm">
+               <button type="button" title="View All Data" onClick={() => setFilterValue('')} className="p-2 py-2 px-3 bg-white/30 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm">
                  All Log
                </button>
              </div>
@@ -483,7 +473,7 @@ export const TimesheetApp = () => {
 
           {/* KPI Dashboard */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="group relative overflow-hidden bg-white/40 backdrop-blur-md border border-white/60 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] flex flex-col justify-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_32px_0_rgba(31,38,135,0.1)] hover:bg-white/60 hover:border-white/80 cursor-pointer">
+            <div className="group relative overflow-hidden bg-white/20 backdrop-blur-[40px] border border-white/40 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.05),inset_0_1px_1px_rgba(255,255,255,0.8)] flex flex-col justify-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_32px_0_rgba(31,38,135,0.1)] hover:bg-white/40 hover:border-white/80 cursor-pointer">
               <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-10 group-hover:scale-110 group-hover:-rotate-12 transition-all duration-500 ease-out">
                 <Clock className="w-24 h-24 text-pink-600" strokeWidth={1.5} />
               </div>
@@ -498,7 +488,7 @@ export const TimesheetApp = () => {
               </div>
             </div>
             
-            <div className="group relative overflow-hidden bg-white/40 backdrop-blur-md border border-white/60 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] flex flex-col justify-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_32px_0_rgba(31,38,135,0.1)] hover:bg-white/60 hover:border-white/80 cursor-pointer">
+            <div className="group relative overflow-hidden bg-white/20 backdrop-blur-[40px] border border-white/40 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.05),inset_0_1px_1px_rgba(255,255,255,0.8)] flex flex-col justify-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_32px_0_rgba(31,38,135,0.1)] hover:bg-white/40 hover:border-white/80 cursor-pointer">
               <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-10 group-hover:scale-110 group-hover:-rotate-12 transition-all duration-500 ease-out">
                 <FileText className="w-24 h-24 text-emerald-600" strokeWidth={1.5} />
               </div>
@@ -513,7 +503,7 @@ export const TimesheetApp = () => {
               </div>
             </div>
 
-            <div className="group relative overflow-hidden bg-white/40 backdrop-blur-md border border-white/60 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] flex flex-col justify-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_32px_0_rgba(31,38,135,0.1)] hover:bg-white/60 hover:border-white/80 cursor-pointer">
+            <div className="group relative overflow-hidden bg-white/20 backdrop-blur-[40px] border border-white/40 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.05),inset_0_1px_1px_rgba(255,255,255,0.8)] flex flex-col justify-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_32px_0_rgba(31,38,135,0.1)] hover:bg-white/40 hover:border-white/80 cursor-pointer">
               <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-10 group-hover:scale-110 group-hover:-rotate-12 transition-all duration-500 ease-out">
                 <MapPin className="w-24 h-24 text-amber-600" strokeWidth={1.5} />
               </div>
@@ -528,7 +518,7 @@ export const TimesheetApp = () => {
               </div>
             </div>
 
-            <div className="group relative overflow-hidden bg-white/40 backdrop-blur-md border border-white/60 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] flex flex-col justify-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_32px_0_rgba(31,38,135,0.1)] hover:bg-white/60 hover:border-white/80 cursor-pointer">
+            <div className="group relative overflow-hidden bg-white/20 backdrop-blur-[40px] border border-white/40 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.05),inset_0_1px_1px_rgba(255,255,255,0.8)] flex flex-col justify-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_32px_0_rgba(31,38,135,0.1)] hover:bg-white/40 hover:border-white/80 cursor-pointer">
               <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-10 group-hover:scale-110 group-hover:-rotate-12 transition-all duration-500 ease-out">
                 <Timer className="w-24 h-24 text-blue-600" strokeWidth={1.5} />
               </div>
@@ -544,14 +534,14 @@ export const TimesheetApp = () => {
             </div>
           </div>
           
-          <div className={`${isFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8' : 'bg-white/40 backdrop-blur-2xl p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/60'} transition-all`}>
+          <div className={`${isFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8' : 'bg-white/20 backdrop-blur-[40px] p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/40'} transition-all`}>
             <div className="flex justify-between items-center mb-5">
               <h2 className="text-xl font-bold flex items-center text-indigo-950">
                 {getDashboardTitle()}
               </h2>
               <button 
                 onClick={() => setIsFullscreen(!isFullscreen)} 
-                className="p-2 bg-white/50 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2"
+                className="p-2 bg-white/30 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2"
                 title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
               >
                 {isFullscreen ? <><Minimize className="w-4 h-4" /> Exit Fullscreen</> : <><Maximize className="w-4 h-4" /> Fullscreen</>}
@@ -567,52 +557,59 @@ export const TimesheetApp = () => {
               </div>
             ) : (
               <div className="space-y-8">
-                <div className={`w-full pt-4 ${isFullscreen ? 'h-[50vh] min-h-[400px]' : 'h-72'}`}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={dashboardStats} margin={{ top: 25, right: 0, bottom: 20, left: -20 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(99,102,241,0.1)" />
-                      <XAxis dataKey="area" tick={{ fontSize: 11, fill: '#4f46e5', fontWeight: 600 }} axisLine={false} tickLine={false} interval={0} angle={-30} textAnchor="end" height={50} />
-                      <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#6366f1' }} axisLine={false} tickLine={false} />
-                      <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#ec4899' }} axisLine={false} tickLine={false} domain={[0, 100]} />
-                      <Tooltip 
-                        contentStyle={{ borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(8px)', boxShadow: '0 8px 32px rgba(31,38,135,0.1)' }}
-                        cursor={{ fill: 'rgba(99, 102, 241, 0.05)' }}
-                      />
-                      <defs>
-                        <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9}/>
-                          <stop offset="100%" stopColor="#ec4899" stopOpacity={0.9}/>
-                        </linearGradient>
-                      </defs>
-                      <Bar 
-                        yAxisId="left" 
-                        dataKey="total" 
-                        name="Total Hours" 
-                        radius={[6, 6, 0, 0]}
-                        onClick={(data: any) => {
-                          if (data && data.area) {
-                            setSelectedAreaDetails(data.area);
-                          } else if (data && data.payload && data.payload.area) {
-                            setSelectedAreaDetails(data.payload.area);
-                          }
-                        }}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <LabelList dataKey="total" position="top" fill="#4f46e5" fontSize={11} fontWeight={600} />
-                        {dashboardStats.map((_, index) => (
-                          <Cell key={`cell-${index}`} fill={`url(#colorGradient)`} />
-                        ))}
-                      </Bar>
-                      <Line yAxisId="right" type="monotone" dataKey="cumulativePercent" name="Cumulative %" stroke="#ec4899" strokeWidth={3} dot={{ r: 4, fill: '#ec4899', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
-                    </ComposedChart>
-                  </ResponsiveContainer>
+                <div className={`w-full pt-4 overflow-x-auto custom-scrollbar ${isFullscreen ? 'h-[50vh] min-h-[400px]' : 'h-72'}`}>
+                  <div style={{ minWidth: `max(100%, ${dashboardStats.length * 60}px)`, height: '100%' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <ComposedChart data={dashboardStats} margin={{ top: 25, right: 0, bottom: 20, left: -20 }}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(99,102,241,0.1)" />
+                        <XAxis dataKey="area" tick={{ fontSize: 11, fill: '#4f46e5', fontWeight: 600 }} axisLine={false} tickLine={false} interval={0} angle={-30} textAnchor="end" height={50} />
+                        <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#6366f1' }} axisLine={false} tickLine={false} />
+                        <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#ec4899' }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                        <Tooltip 
+                          contentStyle={{ borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(8px)', boxShadow: '0 8px 32px rgba(31,38,135,0.1)' }}
+                          cursor={{ fill: 'rgba(99, 102, 241, 0.05)' }}
+                        />
+                        <defs>
+                          <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9}/>
+                            <stop offset="100%" stopColor="#ec4899" stopOpacity={0.9}/>
+                          </linearGradient>
+                          <linearGradient id="colorGradientHover" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#6366f1" stopOpacity={1}/>
+                            <stop offset="100%" stopColor="#d946ef" stopOpacity={1}/>
+                          </linearGradient>
+                        </defs>
+                        <Bar 
+                          yAxisId="left" 
+                          dataKey="total" 
+                          name="Total Hours" 
+                          radius={[6, 6, 0, 0]}
+                          onClick={(data: any) => {
+                            if (data && data.area) {
+                              setSelectedAreaDetails(data.area);
+                            } else if (data && data.payload && data.payload.area) {
+                              setSelectedAreaDetails(data.payload.area);
+                            }
+                          }}
+                          style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}
+                          activeBar={{ fill: 'url(#colorGradientHover)', stroke: '#4f46e5', strokeWidth: 2 }}
+                        >
+                          <LabelList dataKey="total" position="top" fill="#4f46e5" fontSize={11} fontWeight={600} />
+                          {dashboardStats.map((_, index) => (
+                            <Cell key={`cell-${index}`} fill={`url(#colorGradient)`} />
+                          ))}
+                        </Bar>
+                        <Line yAxisId="right" type="monotone" dataKey="cumulativePercent" name="Cumulative %" stroke="#ec4899" strokeWidth={3} dot={{ r: 4, fill: '#ec4899', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+                      </ComposedChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {dashboardStats.map(stat => (
                     <div 
                       key={stat.area} 
-                      className="bg-white/50 backdrop-blur-lg border border-white/80 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] hover:scale-[1.02] transition-transform flex flex-col justify-between cursor-pointer"
+                      className="bg-white/30 backdrop-blur-lg border border-white/80 p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] hover:scale-[1.02] transition-transform flex flex-col justify-between cursor-pointer"
                       onClick={() => setSelectedAreaDetails(stat.area)}
                     >
                       <div className="text-sm text-indigo-900/60 font-bold mb-1 truncate" title={stat.area}>{stat.area}</div>
@@ -625,18 +622,18 @@ export const TimesheetApp = () => {
             )}
           </div>
 
-          <div className={`${isLogsFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8 flex flex-col' : 'bg-white/40 backdrop-blur-2xl p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/60'} transition-all`}>
+          <div className={`${isLogsFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8 flex flex-col' : 'bg-white/20 backdrop-blur-[40px] p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/40'} transition-all`}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold flex items-center text-indigo-950">Recent Logs</h2>
               <div className="flex gap-2">
                 <button 
                   onClick={() => setIsLogsFullscreen(!isLogsFullscreen)} 
-                  className="p-2.5 bg-white/60 text-indigo-700 hover:text-indigo-900 rounded-xl hover:bg-white/90 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2"
+                  className="p-2.5 bg-white/40 text-indigo-700 hover:text-indigo-900 rounded-xl hover:bg-white/90 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2"
                   title={isLogsFullscreen ? "Exit Fullscreen" : "Fullscreen"}
                 >
                   {isLogsFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                 </button>
-                <button title="Refresh Data" onClick={() => fetchTimesheets()} className="p-2.5 bg-white/60 text-indigo-700 border border-white/80 hover:bg-white/90 rounded-xl transition-colors shadow-sm active:scale-95">
+                <button title="Refresh Data" onClick={() => fetchTimesheets()} className="p-2.5 bg-white/40 text-indigo-700 border border-white/80 hover:bg-white/90 rounded-xl transition-colors shadow-sm active:scale-95">
                   <RefreshCw className="w-5 h-5" />
                 </button>
                 {isAdmin && (
@@ -647,10 +644,10 @@ export const TimesheetApp = () => {
               </div>
             </div>
 
-            <div className={`border border-white/60 rounded-2xl overflow-hidden bg-white/30 backdrop-blur-sm ${isLogsFullscreen ? 'flex-1 overflow-y-auto' : ''}`}>
+            <div className={`border border-white/40 rounded-2xl overflow-hidden bg-white/20 backdrop-blur-[40px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] ${isLogsFullscreen ? 'flex-1 overflow-y-auto' : ''}`}>
               <div className="overflow-x-auto">
                 <table className="min-w-full text-left text-sm whitespace-nowrap">
-                  <thead className="bg-white/40 backdrop-blur-md border-b border-white/40 text-indigo-900/80 font-bold text-[13px] uppercase tracking-wider">
+                  <thead className="bg-white/20 backdrop-blur-[20px] border-b border-white/40 text-indigo-900/80 font-bold text-[13px] uppercase tracking-wider">
                     <tr>
                       <th className="px-5 py-4">Area</th>
                       <th className="px-5 py-4">Unit</th>
@@ -675,7 +672,7 @@ export const TimesheetApp = () => {
                       </tr>
                     ) : (
                       filteredTimesheets.map(sheet => (
-                        <tr key={sheet.id} className="hover:bg-white/50 transition-colors">
+                        <tr key={sheet.id} className="hover:bg-white/30 transition-colors">
                           <td className="px-5 py-4 text-indigo-950 font-medium">{sheet.area}</td>
                           <td className="px-5 py-4 font-bold text-indigo-900">{sheet.unitNo}</td>
                           <td className="px-5 py-4 text-indigo-950">
@@ -735,7 +732,7 @@ export const TimesheetApp = () => {
                 <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
                   <div className="space-y-4">
                     {filteredTimesheets.filter(t => t.area === selectedAreaDetails).map((sheet, index) => (
-                      <div key={sheet.id || index} className="bg-white/60 border border-white p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] hover:shadow-md transition-shadow flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                      <div key={sheet.id || index} className="bg-white/40 border border-white p-5 rounded-2xl shadow-[0_4px_16px_0_rgba(31,38,135,0.03)] hover:shadow-md transition-shadow flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                         <div className="flex-1">
                           <div className="font-bold text-indigo-950 mb-2 text-lg">{sheet.operatorName}</div>
                           <div className="text-sm font-semibold text-indigo-700 bg-indigo-50 inline-block px-2.5 py-1 rounded-lg border border-indigo-100 mb-3">Unit: {sheet.unitNo}</div>
