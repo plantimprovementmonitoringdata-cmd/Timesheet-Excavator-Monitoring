@@ -3,9 +3,9 @@ import { collection, addDoc, onSnapshot, deleteDoc, doc, serverTimestamp, update
 import { db } from '../firebase/config';
 import { useAuth } from '../context/AuthContext';
 import { OperationType, handleFirestoreError } from '../utils/firestoreErrorHandler';
-import { exportToDrive } from '../utils/drive';
 import { format, differenceInMinutes, parse, isSameMonth } from 'date-fns';
-import { RefreshCw, Trash2, Send, Tractor, FileSpreadsheet, Pencil, Calendar, Maximize, Minimize, Clock, FileText, MapPin, Timer, Search } from 'lucide-react';
+import { RefreshCw, Trash2, Send, Tractor, FileSpreadsheet, Pencil, Calendar, Maximize, Minimize, Clock, FileText, MapPin, Timer, Search, Download } from 'lucide-react';
+import { toJpeg } from 'html-to-image';
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, LabelList } from 'recharts';
 
 export interface Timesheet {
@@ -25,9 +25,8 @@ export interface Timesheet {
 
 
 export const TimesheetApp = () => {
-  const { user, isAdmin, login, logout, getDriveToken } = useAuth();
+  const { user, isAdmin, login, logout } = useAuth();
   const [timesheets, setTimesheets] = useState<Timesheet[]>([]);
-  const [isExporting, setIsExporting] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [filterMode, setFilterMode] = useState<'month' | 'date'>('month');
   const [filterValue, setFilterValue] = useState(format(new Date(), 'yyyy-MM'));
@@ -35,6 +34,7 @@ export const TimesheetApp = () => {
   const [isLogsFullscreen, setIsLogsFullscreen] = useState(false);
   const [selectedAreaDetails, setSelectedAreaDetails] = useState<string | null>(null);
   const [dashboardSearchArea, setDashboardSearchArea] = useState('');
+  const [isDownloadingImage, setIsDownloadingImage] = useState(false);
 
   const filteredTimesheets = React.useMemo(() => {
     if (!filterValue) return timesheets;
@@ -193,40 +193,53 @@ export const TimesheetApp = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleExport = async () => {
-    const token = getDriveToken();
-    if (!token) {
-      alert("Missing Drive access token. Please re-login to authorize Google Drive (click logout then login again).");
-      return;
-    }
+  const handleDownloadImage = async () => {
+    const element = document.getElementById('recent-logs-container');
+    const scrollContainer = document.getElementById('recent-logs-scroll-container');
+    if (!element || !scrollContainer) return;
+    
+    setIsDownloadingImage(true);
 
-    const confirm = window.confirm(`Export ${filteredTimesheets.length} records to Google Drive as CSV?`);
-    if (!confirm) return;
+    const originalContainerMaxHeight = element.style.maxHeight;
+    const originalContainerOverflow = element.style.overflow;
+    const originalScrollMaxHeight = scrollContainer.style.maxHeight;
+    const originalScrollOverflow = scrollContainer.style.overflow;
 
-    setIsExporting(true);
+    element.style.maxHeight = 'none';
+    element.style.overflow = 'visible';
+    scrollContainer.style.maxHeight = 'none';
+    scrollContainer.style.overflow = 'visible';
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+
     try {
-      const cleanData = filteredTimesheets.map(t => ({
-        "Start Date": t.startDate,
-        "Start Time": t.startTime,
-        "End Date": t.endDate,
-        "End Time": t.endTime,
-        "Location Area": t.area,
-        "Unit Number": t.unitNo,
-        "Operator": t.operatorName,
-        "Remarks": t.remarks || "",
-        "Total Hours": t.totalHours
-      }));
-      const fileName = `Timesheets_Export_${format(new Date(), 'yyyy-MM-dd_HH-mm-ss')}.csv`;
-      await exportToDrive(cleanData, fileName, token);
-      alert("Export successful! Check your Google Drive.");
-    } catch (e: any) {
-      console.error(e);
-      alert("Export failed: " + e.message);
+      const dataUrl = await toJpeg(element, {
+        quality: 1.0,
+        backgroundColor: '#ffffff',
+        pixelRatio: 2,
+        filter: (node) => {
+          if (node instanceof HTMLElement && node.dataset.html2canvasIgnore !== undefined) {
+            return false;
+          }
+          return true;
+        }
+      });
+      
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `Recent_Logs_${format(new Date(), 'yyyyMMdd_HHmmss')}.jpg`;
+      link.click();
+    } catch (error) {
+      console.error("Failed to download image:", error);
+      alert("Failed to download image. Please try again.");
     } finally {
-      setIsExporting(false);
+      element.style.maxHeight = originalContainerMaxHeight;
+      element.style.overflow = originalContainerOverflow;
+      scrollContainer.style.maxHeight = originalScrollMaxHeight;
+      scrollContainer.style.overflow = originalScrollOverflow;
+      setIsDownloadingImage(false);
     }
   };
-
   const handleLogin = async () => {
     try {
       await login();
@@ -648,10 +661,18 @@ export const TimesheetApp = () => {
             )}
           </div>
 
-          <div className={`${isLogsFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8 flex flex-col' : 'bg-white/20 backdrop-blur-[40px] p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/40'} transition-all`}>
+          <div id="recent-logs-container" className={`${isLogsFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8 flex flex-col' : 'bg-white/20 backdrop-blur-[40px] p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/40'} transition-all`}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold flex items-center text-indigo-950">Recent Logs</h2>
-              <div className="flex gap-2">
+              <div className="flex gap-2" data-html2canvas-ignore>
+                <button 
+                  onClick={handleDownloadImage} 
+                  disabled={isDownloadingImage || filteredTimesheets.length === 0}
+                  className="p-2.5 bg-white/40 text-indigo-700 hover:text-indigo-900 rounded-xl hover:bg-white/90 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2 disabled:opacity-50"
+                  title="Download as JPG"
+                >
+                  <Download className={`w-5 h-5 ${isDownloadingImage ? 'animate-bounce' : ''}`} />
+                </button>
                 <button 
                   onClick={() => setIsLogsFullscreen(!isLogsFullscreen)} 
                   className="p-2.5 bg-white/40 text-indigo-700 hover:text-indigo-900 rounded-xl hover:bg-white/90 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2"
@@ -662,15 +683,10 @@ export const TimesheetApp = () => {
                 <button title="Refresh Data" onClick={() => fetchTimesheets()} className="p-2.5 bg-white/40 text-indigo-700 border border-white/80 hover:bg-white/90 rounded-xl transition-colors shadow-sm active:scale-95">
                   <RefreshCw className="w-5 h-5" />
                 </button>
-                {isAdmin && (
-                  <button title="Export to Google Drive" onClick={handleExport} disabled={isExporting || filteredTimesheets.length === 0} className="px-4 py-2 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-white font-bold rounded-xl transition-all shadow-[0_4px_16px_rgba(16,185,129,0.2)] disabled:opacity-50 active:scale-95 text-sm flex items-center gap-2">
-                    {isExporting ? 'Exporting...' : 'Export to Drive (CSV)'}
-                  </button>
-                )}
               </div>
             </div>
 
-            <div className={`border border-white/40 rounded-2xl overflow-hidden bg-white/20 backdrop-blur-[40px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] ${isLogsFullscreen ? 'flex-1 overflow-y-auto custom-scrollbar' : 'max-h-96 overflow-y-auto custom-scrollbar'}`}>
+            <div id="recent-logs-scroll-container" className={`border border-white/40 rounded-2xl overflow-hidden bg-white/20 backdrop-blur-[40px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] ${isLogsFullscreen ? 'flex-1 overflow-y-auto custom-scrollbar' : 'max-h-96 overflow-y-auto custom-scrollbar'}`}>
               <div className="overflow-x-auto custom-scrollbar">
                 <table className="min-w-full text-left text-sm whitespace-nowrap">
                   <thead className="bg-white/20 backdrop-blur-[20px] border-b border-white/40 text-indigo-900/80 font-bold text-[13px] uppercase tracking-wider">
