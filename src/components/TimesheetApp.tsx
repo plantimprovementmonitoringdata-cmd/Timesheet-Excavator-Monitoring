@@ -35,6 +35,7 @@ export const TimesheetApp = () => {
   const [selectedAreaDetails, setSelectedAreaDetails] = useState<string | null>(null);
   const [dashboardSearchArea, setDashboardSearchArea] = useState('');
   const [isDownloadingImage, setIsDownloadingImage] = useState(false);
+  const [isDownloadingDashboard, setIsDownloadingDashboard] = useState(false);
 
   const filteredTimesheets = React.useMemo(() => {
     if (!filterValue) return timesheets;
@@ -202,13 +203,17 @@ export const TimesheetApp = () => {
 
     const originalContainerMaxHeight = element.style.maxHeight;
     const originalContainerOverflow = element.style.overflow;
+    const originalContainerWidth = element.style.width;
     const originalScrollMaxHeight = scrollContainer.style.maxHeight;
     const originalScrollOverflow = scrollContainer.style.overflow;
+    const originalScrollWidth = scrollContainer.style.width;
 
     element.style.maxHeight = 'none';
     element.style.overflow = 'visible';
+    element.style.width = scrollContainer.scrollWidth + 60 + 'px';
     scrollContainer.style.maxHeight = 'none';
     scrollContainer.style.overflow = 'visible';
+    scrollContainer.style.width = scrollContainer.scrollWidth + 'px';
 
     await new Promise(resolve => setTimeout(resolve, 50));
 
@@ -235,9 +240,60 @@ export const TimesheetApp = () => {
     } finally {
       element.style.maxHeight = originalContainerMaxHeight;
       element.style.overflow = originalContainerOverflow;
+      element.style.width = originalContainerWidth;
       scrollContainer.style.maxHeight = originalScrollMaxHeight;
       scrollContainer.style.overflow = originalScrollOverflow;
+      scrollContainer.style.width = originalScrollWidth;
       setIsDownloadingImage(false);
+    }
+  };
+  const handleDownloadDashboardImage = async () => {
+    const scrollContainer = document.getElementById('overview-dashboard-scroll-container');
+    if (!scrollContainer) return;
+    
+    setIsDownloadingDashboard(true);
+
+    const originalScrollMaxHeight = scrollContainer.style.maxHeight;
+    const originalScrollOverflow = scrollContainer.style.overflow;
+    const originalScrollWidth = scrollContainer.style.width;
+    const originalScrollHeight = scrollContainer.style.height;
+
+    scrollContainer.style.maxHeight = 'none';
+    scrollContainer.style.overflow = 'visible';
+    scrollContainer.style.width = Math.max(scrollContainer.scrollWidth, 1200) + 'px';
+    scrollContainer.style.height = '600px';
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+
+    try {
+      const dataUrl = await toJpeg(scrollContainer, {
+        quality: 1.0,
+        backgroundColor: '#ffffff',
+        pixelRatio: 2,
+        style: {
+          padding: '24px',
+        },
+        filter: (node) => {
+          if (node instanceof HTMLElement && node.dataset.html2canvasIgnore !== undefined) {
+            return false;
+          }
+          return true;
+        }
+      });
+      
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `Overview_Dashboard_Chart_${format(new Date(), 'yyyyMMdd_HHmmss')}.jpg`;
+      link.click();
+    } catch (error) {
+      console.error("Failed to download image:", error);
+      alert("Failed to download image. Please try again.");
+    } finally {
+      scrollContainer.style.maxHeight = originalScrollMaxHeight;
+      scrollContainer.style.overflow = originalScrollOverflow;
+      scrollContainer.style.width = originalScrollWidth;
+      scrollContainer.style.height = originalScrollHeight;
+      setIsDownloadingDashboard(false);
     }
   };
   const handleLogin = async () => {
@@ -559,12 +615,12 @@ export const TimesheetApp = () => {
             </div>
           </div>
           
-          <div className={`${isFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8' : 'bg-white/20 backdrop-blur-[40px] p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/40'} transition-all`}>
+          <div id="overview-dashboard-container" className={`${isFullscreen ? 'fixed inset-0 z-[100] bg-indigo-50/95 backdrop-blur-3xl overflow-y-auto p-4 sm:p-8' : 'bg-white/20 backdrop-blur-[40px] p-6 rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_1px_1px_rgba(255,255,255,0.8)] border border-white/40'} transition-all`}>
             <div className="flex justify-between items-center mb-5">
               <h2 className="text-xl font-bold flex items-center text-indigo-950">
                 {getDashboardTitle()}
               </h2>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3" data-html2canvas-ignore>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Search className="h-4 w-4 text-indigo-400" />
@@ -577,6 +633,14 @@ export const TimesheetApp = () => {
                     className="pl-9 pr-4 py-2 w-48 sm:w-64 rounded-xl bg-white/40 backdrop-blur-[20px] border-[1.5px] border-indigo-200/60 shadow-[inset_0_2px_8px_rgba(31,38,135,0.08),0_1px_2px_rgba(255,255,255,0.9)] text-sm focus:bg-white/80 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 outline-none transition-all text-indigo-950 placeholder-indigo-900/40"
                   />
                 </div>
+                <button 
+                  onClick={handleDownloadDashboardImage} 
+                  disabled={isDownloadingDashboard || searchedDashboardStats.length === 0}
+                  className="p-2.5 bg-white/30 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2 disabled:opacity-50"
+                  title="Download as JPG"
+                >
+                  <Download className={`w-5 h-5 ${isDownloadingDashboard ? 'animate-bounce' : ''}`} />
+                </button>
                 <button 
                   onClick={() => setIsFullscreen(!isFullscreen)} 
                   className="p-2.5 bg-white/30 text-indigo-900/70 hover:text-indigo-900 rounded-xl hover:bg-white/80 border border-transparent hover:border-white/80 transition-all text-xs font-bold active:scale-95 shadow-sm flex items-center gap-2"
@@ -596,8 +660,13 @@ export const TimesheetApp = () => {
               </div>
             ) : (
               <div className="space-y-8">
-                <div className={`w-full pt-4 overflow-x-auto custom-scrollbar ${isFullscreen ? 'h-[50vh] min-h-[400px]' : 'h-72'}`}>
-                  <div style={{ minWidth: `max(100%, ${searchedDashboardStats.length * 60}px)`, height: '100%' }}>
+                <div id="overview-dashboard-scroll-container" className={`w-full overflow-x-auto custom-scrollbar ${isFullscreen ? 'h-[50vh] min-h-[400px]' : 'h-72'} ${isDownloadingDashboard ? 'bg-white h-auto' : 'pt-4'}`}>
+                  {isDownloadingDashboard && (
+                    <div className="text-xl font-bold text-indigo-950 mb-6 pb-2 border-b border-indigo-100 px-2 flex justify-between items-center">
+                      <span>{getDashboardTitle()}</span>
+                    </div>
+                  )}
+                  <div style={{ minWidth: `max(100%, ${searchedDashboardStats.length * 60}px)`, height: isDownloadingDashboard ? 'calc(100% - 60px)' : '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <ComposedChart data={searchedDashboardStats} margin={{ top: 25, right: 0, bottom: 20, left: -20 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(99,102,241,0.1)" />
@@ -619,6 +688,7 @@ export const TimesheetApp = () => {
                           </linearGradient>
                         </defs>
                         <Bar 
+                          isAnimationActive={!isDownloadingDashboard}
                           yAxisId="left" 
                           dataKey="total" 
                           name="Total Hours" 
@@ -638,7 +708,7 @@ export const TimesheetApp = () => {
                             <Cell key={`cell-${index}`} fill={`url(#colorGradient)`} />
                           ))}
                         </Bar>
-                        <Line yAxisId="right" type="monotone" dataKey="cumulativePercent" name="Cumulative %" stroke="#ec4899" strokeWidth={3} dot={{ r: 4, fill: '#ec4899', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+                        <Line isAnimationActive={!isDownloadingDashboard} yAxisId="right" type="monotone" dataKey="cumulativePercent" name="Cumulative %" stroke="#ec4899" strokeWidth={3} dot={{ r: 4, fill: '#ec4899', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
                       </ComposedChart>
                     </ResponsiveContainer>
                   </div>
